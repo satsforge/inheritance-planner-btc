@@ -51,6 +51,23 @@ test('unaware heirs trigger the explicit warning; aware heirs do not', () => {
   assert.doesNotMatch(textOf(aware), /tu familia no sabe/i);
 });
 
+test('single-key custody with a heir who would not know how to access recommends the Inheritance Vault; a capable heir does not need it', () => {
+  const notCapable = buildPlan({ ...emptyAnswers(), custody: 'single', heirsCapable: 'no' }, tr);
+  assert.match(textOf(notCapable), /Bóveda de Herencia BTC/);
+
+  const unsure = buildPlan({ ...emptyAnswers(), custody: 'single', heirsCapable: 'unsure' }, tr);
+  assert.match(textOf(unsure), /Bóveda de Herencia BTC/);
+
+  const capable = buildPlan({ ...emptyAnswers(), custody: 'single', heirsCapable: 'yes' }, tr);
+  assert.doesNotMatch(textOf(capable), /Bóveda de Herencia BTC/);
+
+  // Already-multisig custody has its own upgrade branch and never mentions
+  // the vault, regardless of heir capability - it's a single-key-custody
+  // recommendation specifically.
+  const multisigNotCapable = buildPlan({ ...emptyAnswers(), custody: 'multisig', heirsCapable: 'no' }, tr);
+  assert.doesNotMatch(textOf(multisigNotCapable), /Bóveda de Herencia BTC/);
+});
+
 test('no trusted helper triggers an urgency note in the docs section', () => {
   const plan = buildPlan({ ...emptyAnswers(), trustedHelper: 'no' }, tr);
   assert.match(textOf(plan), /el paso más urgente/i);

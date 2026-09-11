@@ -71,6 +71,9 @@ export function buildPlan(answers, tr) {
     upgradeParagraphs.push(tr('plan.upgrade.vendorDiversity'));
     upgradeParagraphs.push(tr('plan.upgrade.coldcardIncident'));
     upgradeParagraphs.push(tr('plan.upgrade.tools'));
+    if (a.heirsCapable !== 'yes') {
+      upgradeParagraphs.push(tr('plan.upgrade.vaultOption'));
+    }
   } else if (a.custody === 'multisig') {
     upgradeParagraphs.push(tr('plan.upgrade.alreadyMultisig'));
     upgradeParagraphs.push(tr('plan.upgrade.reviewDistribution'));
