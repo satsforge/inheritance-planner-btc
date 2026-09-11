@@ -1,0 +1,24 @@
+{
+  "name": "inheritance-planner-btc",
+  "version": "1.0.0",
+  "description": "Planificador de herencia y redundancia para Bitcoin, 100% del lado del cliente: diagnostica tu configuracion actual, genera un plan de respaldo/documentacion, y exporta una carta para tus herederos (cifrada opcionalmente)",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@noble/ciphers": "^2.4.0",
+    "@noble/hashes": "^2.4.0",
+    "@scure/base": "^2.4.0",
+    "jspdf": "^4.2.1",
+    "zxcvbn": "^4.4.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1"
+  }
+}

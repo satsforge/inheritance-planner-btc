@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="__CSP__">
+<title>Planificador de Herencia BTC</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23f7931a'/%3E%3Ctext x='16' y='23' font-family='Arial,sans-serif' font-size='20' font-weight='bold' fill='%231a1200' text-anchor='middle'%3E%E2%82%BF%3C/text%3E%3C/svg%3E">
+<style>__CSS__</style>
+</head>
+<body>
+<div class="app">
+
+<div class="topbar">
+  <div class="brand"><span class="coin">₿</span> <span data-i18n="topbar.brand">Planificador de Herencia BTC</span></div>
+  <div class="topbar-actions">
+    <button class="theme-toggle" id="lang-toggle" type="button" data-i18n="topbar.lang.toEnglish">🌐 English</button>
+    <button class="theme-toggle" id="theme-toggle" type="button" data-i18n="topbar.theme.toLight">☀ Modo claro</button>
+  </div>
+</div>
+
+<main>
+
+<section id="screen-intro" class="screen">
+  <div class="panel">
+    <div class="notice notice-info" data-i18n="notice.intro">
+      Esta herramienta...
+    </div>
+    <div class="actions-row">
+      <button type="button" id="intro-start-btn" class="btn-primary" data-i18n="nav.start">Empezar</button>
+      <button type="button" id="intro-recover-btn" class="btn-secondary" data-i18n="recover.tab">Recuperar un plan cifrado</button>
+    </div>
+  </div>
+</section>
+
+<section id="screen-wizard" class="screen" hidden>
+  <div class="panel">
+    <div class="step-indicator" id="step-indicator">
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="step-label" id="step-label"></div>
+
+    <form id="wizard-form">
+      <div class="wizard-step" id="step-1">
+        <h2 data-i18n="wizard.step1.title">Tu situación actual</h2>
+        <fieldset>
+          <legend data-i18n="wizard.custody.label">¿Cómo tenés guardados tus bitcoin hoy?</legend>
+          <div class="option-list" id="custody-options"></div>
+        </fieldset>
+      </div>
+
+      <div class="wizard-step" id="step-2" hidden>
+        <h2 data-i18n="wizard.step2.title">Respaldo y redundancia</h2>
+        <fieldset>
+          <legend data-i18n="wizard.backup.label">¿Qué tipo de respaldo físico tenés?</legend>
+          <div class="option-list">
+            <label><input type="checkbox" id="backup-paper"> <span data-i18n="wizard.backup.paper">Copia en papel</span></label>
+            <label><input type="checkbox" id="backup-metal"> <span data-i18n="wizard.backup.metal">Copia grabada en metal</span></label>
+            <label><input type="checkbox" id="backup-multipleCopies"> <span data-i18n="wizard.backup.multipleCopies">Más de una copia</span></label>
+            <label><input type="checkbox" id="backup-multipleLocations"> <span data-i18n="wizard.backup.multipleLocations">Copias en más de una ubicación</span></label>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="wizard-step" id="step-3" hidden>
+        <h2 data-i18n="wizard.step3.title">Tus herederos</h2>
+        <fieldset>
+          <legend data-i18n="wizard.heirsAware.label">¿Tu familia o herederos saben que tenés bitcoin?</legend>
+          <div class="option-list" id="heirsAware-options"></div>
+        </fieldset>
+        <fieldset>
+          <legend data-i18n="wizard.heirsCapable.label">¿Alguno sabría técnicamente cómo acceder?</legend>
+          <div class="option-list" id="heirsCapable-options"></div>
+        </fieldset>
+        <fieldset>
+          <legend data-i18n="wizard.trustedHelper.label">¿Tenés a alguien de confianza técnica que podría ayudarlos?</legend>
+          <div class="option-list" id="trustedHelper-options"></div>
+        </fieldset>
+      </div>
+
+      <div class="wizard-step" id="step-4" hidden>
+        <h2 data-i18n="wizard.step4.title">Contexto (opcional)</h2>
+        <label class="field">
+          <span data-i18n="wizard.jurisdiction.label">País o jurisdicción (opcional)</span>
+          <input type="text" id="jurisdiction-input" autocomplete="off">
+        </label>
+        <p class="hint" data-i18n="wizard.jurisdiction.hint">Esto solo personaliza el texto...</p>
+      </div>
+
+      <div class="actions-row">
+        <button type="button" id="wizard-back-btn" class="btn-secondary" data-i18n="nav.back">← Atrás</button>
+        <button type="submit" id="wizard-next-btn" class="btn-primary" data-i18n="nav.next">Siguiente →</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section id="screen-result" class="screen" hidden>
+  <div class="panel">
+    <h2 data-i18n="result.title">Tu plan</h2>
+    <p class="hint" data-i18n="result.hint">Revisalo, editá...</p>
+    <div id="plan-output"></div>
+    <div class="actions-row">
+      <button type="button" id="result-download-txt-btn" class="btn-secondary" data-i18n="result.download.txt">⬇ Descargar como texto (.txt)</button>
+      <button type="button" id="result-download-pdf-btn" class="btn-secondary" data-i18n="result.download.pdf">⬇ Descargar como PDF</button>
+      <button type="button" id="result-restart-btn" class="btn-secondary" data-i18n="result.restart">Volver a empezar</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 data-i18n="result.encrypt.title">Exportar cifrado (opcional)</h2>
+    <p class="hint" data-i18n="result.encrypt.hint">Si vas a guardar este plan...</p>
+    <label class="field">
+      <span data-i18n="result.encrypt.password.label">Contraseña de cifrado</span>
+      <input type="password" id="encrypt-password-input" autocomplete="off">
+    </label>
+    <div class="strength-meter" id="encryptStrengthMeter"><div></div><div></div><div></div><div></div></div>
+    <div class="strength-label" id="encryptStrengthLabel" data-i18n="strength.emptyPassphrase">Sin contraseña</div>
+    <p id="encrypt-error" class="error" hidden></p>
+    <div class="actions-row">
+      <button type="button" id="result-download-encrypted-btn" class="btn-primary" data-i18n="result.encrypt.download">⬇ Descargar cifrado (.txt)</button>
+    </div>
+  </div>
+</section>
+
+<section id="screen-recover" class="screen" hidden>
+  <div class="panel">
+    <h2 data-i18n="recover.title">Recuperar un plan cifrado</h2>
+    <p class="hint" data-i18n="recover.hint">Pegá o cargá el bloque cifrado...</p>
+    <label class="field">
+      <span data-i18n="recover.blob.label">Bloque cifrado</span>
+      <textarea id="recover-blob-input" rows="4" autocomplete="off" spellcheck="false"></textarea>
+      <div class="file-load-row">
+        <button type="button" class="btn-secondary" id="recover-file-btn" data-i18n="fileLoad.button">📁 Cargar desde archivo</button>
+        <input type="file" id="recover-file-input" accept=".txt,text/plain" hidden>
+      </div>
+    </label>
+    <label class="field">
+      <span data-i18n="recover.password.label">Contraseña</span>
+      <input type="password" id="recover-password-input" autocomplete="off">
+    </label>
+    <p id="recover-error" class="error" hidden></p>
+    <div class="actions-row">
+      <button type="button" id="recover-decrypt-btn" class="btn-primary" data-i18n="recover.button">Descifrar</button>
+      <button type="button" id="recover-back-btn" class="btn-secondary" data-i18n="nav.back">← Atrás</button>
+    </div>
+    <label class="field" id="recover-output-wrap" hidden>
+      <textarea id="recover-output" class="mono" rows="14" readonly></textarea>
+    </label>
+  </div>
+</section>
+
+</main>
+
+<p class="footer-note" data-i18n="footer.note">
+  Sin conexion de red...
+</p>
+
+</div>
+<script>__SCRIPT__</script>
+</body>
+</html>
